@@ -519,7 +519,8 @@ func resourceComputeInstanceTemplateCreate(d *schema.ResourceData, meta interfac
 
 	// Depreciated fields
 	if v, ok := d.GetOk("automatic_restart"); ok {
-		instanceProperties.Scheduling.AutomaticRestart = v.(bool)
+		v := v.(bool)
+		instanceProperties.Scheduling.AutomaticRestart = &v
 	}
 
 	if v, ok := d.GetOk("on_host_maintenance"); ok {
@@ -537,7 +538,8 @@ func resourceComputeInstanceTemplateCreate(d *schema.ResourceData, meta interfac
 		_scheduling := _schedulings[0].(map[string]interface{})
 
 		if vp, okp := _scheduling["automatic_restart"]; okp {
-			instanceProperties.Scheduling.AutomaticRestart = vp.(bool)
+			v := vp.(bool)
+			instanceProperties.Scheduling.AutomaticRestart = &v
 			forceSendFieldsScheduling = append(forceSendFieldsScheduling, "AutomaticRestart")
 		}
 
@@ -682,11 +684,11 @@ func flattenNetworkInterfaces(networkInterfaces []*compute.NetworkInterface) ([]
 func flattenScheduling(scheduling *compute.Scheduling) ([]map[string]interface{}, bool) {
 	result := make([]map[string]interface{}, 0, 1)
 	schedulingMap := make(map[string]interface{})
-	schedulingMap["automatic_restart"] = scheduling.AutomaticRestart
+	schedulingMap["automatic_restart"] = *scheduling.AutomaticRestart
 	schedulingMap["on_host_maintenance"] = scheduling.OnHostMaintenance
 	schedulingMap["preemptible"] = scheduling.Preemptible
 	result = append(result, schedulingMap)
-	return result, scheduling.AutomaticRestart
+	return result, *scheduling.AutomaticRestart
 }
 
 func flattenServiceAccounts(serviceAccounts []*compute.ServiceAccount) []map[string]interface{} {

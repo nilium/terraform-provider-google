@@ -643,7 +643,8 @@ func resourceComputeInstanceCreate(d *schema.ResourceData, meta interface{}) err
 	scheduling := &compute.Scheduling{}
 
 	if val, ok := d.GetOk(prefix + ".automatic_restart"); ok {
-		scheduling.AutomaticRestart = val.(bool)
+		v := val.(bool)
+		scheduling.AutomaticRestart = &v
 	}
 
 	if val, ok := d.GetOk(prefix + ".preemptible"); ok {
@@ -981,7 +982,8 @@ func resourceComputeInstanceUpdate(d *schema.ResourceData, meta interface{}) err
 		scheduling := &compute.Scheduling{}
 
 		if val, ok := d.GetOk(prefix + ".automatic_restart"); ok {
-			scheduling.AutomaticRestart = val.(bool)
+			v := val.(bool)
+			scheduling.AutomaticRestart = &v
 		}
 
 		if val, ok := d.GetOk(prefix + ".preemptible"); ok {
